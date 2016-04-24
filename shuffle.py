@@ -1,0 +1,12 @@
+import random
+import sys
+
+lines = sys.stdin.readlines()
+
+if len(sys.argv) >= 2:
+    lines = random.sample(lines, int(sys.argv[1]))
+else:
+    random.shuffle(lines)
+
+for line in lines:
+    sys.stdout.write(line)
