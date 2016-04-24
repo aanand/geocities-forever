@@ -20,7 +20,7 @@ corpus-raw:
 	grep -rL 'Index of' $(DOWNLOAD_DIR) | xargs cat > $(CORPUS_RAW_FILE)
 
 scrape:
-	python scrape.py < $(SELECTED_URLS_FILE)
+	while true; do python scrape.py < $(SELECTED_URLS_FILE) && break; done
 
 select-urls:
 	cat $(URLS_FILE) | python shuffle.py $(NUM_URLS) | sed -e 's/oocities.com/oocities.org/' > $(SELECTED_URLS_FILE)
