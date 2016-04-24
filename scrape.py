@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 import requests
 
 import logging
@@ -61,32 +60,9 @@ def scrape_url(url, overwrite=False):
 
     html = response.content
     html = remove_additions(html)
-    html = rewrite_embeds(html, path)
 
     with open(destination, 'wb') as f:
         f.write(html)
-
-
-def rewrite_embeds(html, path):
-    soup = BeautifulSoup(html, "lxml")
-
-    for tag in soup.find_all('img'):
-        try:
-            if hasattr(tag, 'attrs') \
-               and 'src' in tag.attrs \
-               and not tag.attrs['src'].startswith('http'):
-                src = tag.attrs['src'].decode('utf-8', 'replace')
-                src = os.path.join(os.path.dirname(path), src)
-                if not src.startswith('/'):
-                    src = '/' + src
-                src = u"http://www.oocities.org{}".format(src).encode('utf-8', 'replace')
-
-                log.debug(" -> Rewriting {} to {}".format(repr(tag.attrs['src']), repr(src)))
-                tag.attrs['src'] = src
-        except UnicodeEncodeError, UnicodeDecodeError:
-            pass
-
-    return str(soup)
 
 
 def remove_additions(html):
