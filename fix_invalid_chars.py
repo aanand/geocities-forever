@@ -7,4 +7,4 @@ while True:
         break
 
     line = line.decode('utf-8', 'replace')
-    sys.stdout.write(line.encode('utf-8', 'replace'))
+    sys.stdout.write(line.encode('ascii', 'xmlcharrefreplace'))
