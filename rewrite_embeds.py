@@ -1,7 +1,6 @@
-from bs4 import BeautifulSoup
-
 import logging
 import os
+import re
 import sys
 
 
@@ -12,6 +11,8 @@ log = logging.getLogger(__name__)
 in_dir = sys.argv[1]
 out_dir = sys.argv[2]
 
+SRC = re.compile(r'\bsrc\s*=\s*(".*?"|\'.*?\')')
+
 
 def rewrite_embeds_file(from_path, to_path, site_name):
     with open(from_path, 'rb') as f:
@@ -20,25 +21,25 @@ def rewrite_embeds_file(from_path, to_path, site_name):
 
 
 def rewrite_embeds_string(html, site_name):
-    soup = BeautifulSoup(html, "lxml")
+    def replace(match):
+        group = match.group(1)
+        quote_char = group[0]
+        src = group[1:-1]
 
-    for tag in soup.find_all('img'):
-        try:
-            if hasattr(tag, 'attrs') \
-               and 'src' in tag.attrs \
-               and not tag.attrs['src'].startswith('http'):
-                src = tag.attrs['src'].decode('utf-8', 'replace')
-                src = os.path.join('/', site_name, src)
-                if not src.startswith('/'):
-                    src = '/' + src
-                src = u"http://www.oocities.org{}".format(src).encode('utf-8', 'replace')
+        if src.startswith('http'):
+            return group
 
-                log.debug(" -> Rewriting {} to {}".format(repr(tag.attrs['src']), repr(src)))
-                tag.attrs['src'] = src
-        except UnicodeEncodeError, UnicodeDecodeError:
-            pass
+        src = os.path.join('/', site_name, src)
+        if not src.startswith('/'):
+            src = '/' + src
+        src = "http://www.oocities.org{}".format(src)
 
-    return str(soup)
+        replacement = "src={}{}{}".format(quote_char, src, quote_char)
+
+        log.debug(" -> Rewriting {} to {}".format(match.group(0), replacement))
+        return replacement
+
+    return SRC.sub(replace, html)
 
 
 for site_name in os.listdir(in_dir):
