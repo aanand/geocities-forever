@@ -15,24 +15,18 @@ backgrounds = load('backgrounds.txt')
 
 def replace_id(match):
     attr = match.group(1).lower()
-    if attr == 'bg':
-        attr = 'background'
-        db = backgrounds
-    else:
-        db = images
-
     group = match.group(2)
     quote_char = group[0]
     asset_id = int(group[1:-1])
 
-    if asset_id >= len(db):
-        log.debug("{} #{} not found".format(attr, asset_id))
-        return match.group(0)
+    if attr == 'bg':
+        new_id = asset_id % len(backgrounds)
+    else:
+        new_id = asset_id % len(images)
 
-    url = db[asset_id]
-    log.debug("{}={} -> {}".format(attr, asset_id, url))
+    log.debug("{}: {} -> {}".format(attr, asset_id, new_id))
 
-    return '{}={}{}{}'.format(attr, quote_char, url, quote_char)
+    return '{}={}{}{}'.format(attr, quote_char, new_id, quote_char)
 
 html = re.sub(
     r'\b(src|bg)\s*=\s*("\d+"|\'\d+\')',

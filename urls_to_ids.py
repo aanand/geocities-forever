@@ -6,12 +6,16 @@ import sys
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-assets = []
+images = []
+backgrounds = []
 
 def replace_url(match):
     attr = match.group(1).lower()
     if attr == 'background':
         attr = 'bg'
+        db = backgrounds
+    else:
+        db = images
 
     group = match.group(2)
     quote_char = group[0]
@@ -19,12 +23,17 @@ def replace_url(match):
     log.debug(url)
 
     try:
-        index = assets.index(url)
+        index = db.index(url)
     except ValueError:
-        assets.append(url)
-        index = len(assets) - 1
+        db.append(url)
+        index = len(db) - 1
 
     return '{}={}{}{}'.format(attr, quote_char, index, quote_char)
+
+def save(db, path):
+    with open(path, 'wb') as f:
+        for url in db:
+            f.write(url + '\n')
 
 html = re.sub(
     r'\b(src|background)\s*=\s*(".*?"|\'.*?\')',
@@ -35,6 +44,5 @@ html = re.sub(
 
 print(html)
 
-with open('assets.txt', 'wb') as f:
-    for url in assets:
-        f.write(url + '\n')
+save(images, 'images.txt')
+save(backgrounds, 'backgrounds.txt')
