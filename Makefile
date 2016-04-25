@@ -18,7 +18,7 @@ corpus:
 	python urls_to_ids.py < $(CORPUS_RAW_FILE) > $(CORPUS_FILE)
 
 corpus-raw:
-	grep -rL 'Index of' $(REWRITTEN_DIR) | xargs cat > $(CORPUS_RAW_FILE)
+	grep -rL 'Index of' $(REWRITTEN_DIR) | xargs cat | python fix_invalid_chars.py > $(CORPUS_RAW_FILE)
 
 rewrite-embeds:
 	python rewrite_embeds.py $(DOWNLOAD_DIR) $(REWRITTEN_DIR)
