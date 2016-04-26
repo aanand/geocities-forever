@@ -12,7 +12,7 @@ SAMPLE_RAW_FILE := sample-raw.html
 default: corpus
 
 sample:
-	python ids_to_urls.py < $(SAMPLE_RAW_FILE) > $(SAMPLE_FILE)
+	cat $(SAMPLE_RAW_FILE) | python ids_to_urls.py | python remove_swallowing_tags.py > $(SAMPLE_FILE)
 
 corpus:
 	python urls_to_ids.py < $(CORPUS_RAW_FILE) > $(CORPUS_FILE)
