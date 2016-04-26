@@ -3,7 +3,8 @@ import re
 import sys
 
 
-logging.basicConfig(level=logging.DEBUG)
+log_level = logging.DEBUG if "-v" in sys.argv else logging.INFO
+logging.basicConfig(level=log_level)
 log = logging.getLogger(__name__)
 
 def load(path):
