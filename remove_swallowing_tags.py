@@ -7,7 +7,7 @@ logging.basicConfig(level=log_level)
 log = logging.getLogger(__name__)
 
 SWALLOWING_TAG = re.compile(
-    r'<!(--)?|-->|<script.*?>|<noscript.*?>|<noembed.*?>|<noframes.*?>|<style.*?>|<title.*?>|<xmp.*?>|<select.*?>|<option.*?>',
+    r'<!(--)?|-->|<script.*?>|<noscript.*?>|<noembed.*?>|<noframes.*?>|<style.*?>|<title.*?>|<xmp.*?>|<select.*?>|<option.*?>|http-equiv=["\']?refresh["\']?',
     flags=(re.IGNORECASE|re.DOTALL),
 )
 
