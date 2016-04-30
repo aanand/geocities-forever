@@ -5,6 +5,7 @@ set -e
 script_name="$0"
 verbose=0
 fixup_embeds=0
+force=0
 posargs=()
 
 fixup_embeds_if_required() {
@@ -19,8 +20,10 @@ while [[ "$#" -gt 0 ]]; do
   case "$1" in
     "-v"|"--verbose")
       verbose=1;;
-    "-f"|"--fixup-embeds")
+    "--fixup-embeds")
       fixup_embeds=1;;
+    "--force")
+      force=1;;
     *)
       posargs+=("$1");;
   esac
@@ -38,6 +41,13 @@ target_dir="${posargs[1]}"
 
 for path in $source_dir/*.html; do
   destination="${target_dir}/$(basename $path)"
+
+  if [[ -f "$destination" && "$force" -ne 1 ]]; then
+    if [[ "$verbose" -eq 1 ]]; then
+      >&2 echo "Skipping $destination - already exists"
+    fi
+    continue
+  fi
 
   cat "$path" \
     | sed -e $'s/\x1B\[0m//' \
