@@ -9,7 +9,7 @@ posargs=()
 
 fixup_embeds_if_required() {
   if [[ "$fixup_embeds" -eq 1 ]]; then
-    python fixup_embeds.py
+    scripts/fixup-embeds
   else
     cat
   fi
@@ -41,8 +41,8 @@ for path in $source_dir/*.html; do
 
   cat "$path" \
     | sed -e $'s/\x1B\[0m//' \
-    | python ids_to_urls.py \
-    | python remove_swallowing_tags.py \
+    | scripts/ids-to-urls \
+    | scripts/remove-swallowing-tags \
     | fixup_embeds_if_required \
     > "$destination"
 

@@ -10,19 +10,19 @@ CORPUS_RAW_FILE := corpus-raw.html
 default: corpus
 
 corpus:
-	python urls_to_ids.py < $(CORPUS_RAW_FILE) > $(CORPUS_FILE)
+	scripts/urls-to-ids < $(CORPUS_RAW_FILE) > $(CORPUS_FILE)
 
 corpus-raw:
-	grep -rL 'Index of' $(REWRITTEN_DIR) | xargs cat | python fix_invalid_chars.py > $(CORPUS_RAW_FILE)
+	grep -rL 'Index of' $(REWRITTEN_DIR) | xargs cat | scripts/fix-invalid-chars > $(CORPUS_RAW_FILE)
 
 rewrite-embeds:
-	python rewrite_embeds.py $(DOWNLOAD_DIR) $(REWRITTEN_DIR)
+	scripts/rewrite-embeds $(DOWNLOAD_DIR) $(REWRITTEN_DIR)
 
 scrape:
-	while true; do python scrape.py < $(SELECTED_URLS_FILE) && break; done
+	while true; do scripts/scrape < $(SELECTED_URLS_FILE) && break; done
 
 select-urls:
-	cat $(URLS_FILE) | python shuffle.py $(NUM_URLS) | sed -e 's/oocities.com/oocities.org/' > $(SELECTED_URLS_FILE)
+	cat $(URLS_FILE) | scripts/shuffle $(NUM_URLS) | sed -e 's/oocities.com/oocities.org/' > $(SELECTED_URLS_FILE)
 
 clean:
 	rm -rf $(CORPUS_FILE) $(DOWNLOAD_DIR) $(SELECTED_URLS_FILE)
