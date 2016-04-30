@@ -14,7 +14,7 @@ logging.basicConfig(level=log_level)
 log = logging.getLogger(__name__)
 
 requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.level = logging.INFO
+requests_log.level = logging.DEBUG
 requests_log.propagate = False
 
 ARCHIVE_ORG = 'http://web.archive.org/web/http://www.geocities.com/'
