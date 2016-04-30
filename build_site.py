@@ -45,6 +45,9 @@ def rewrite_link(match):
     logging.debug("  {}".format(replacement))
     return replacement
 
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
 for raw_path in all_paths:
     processed_path = os.path.join(output_dir, os.path.basename(raw_path))
     logging.debug("{} -> {}".format(raw_path, processed_path))
