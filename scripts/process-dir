@@ -10,7 +10,13 @@ posargs=()
 
 fixup_embeds_if_required() {
   if [[ "$fixup_embeds" -eq 1 ]]; then
-    scripts/fixup-embeds
+    cmd="scripts/fixup-embeds"
+
+    if [[ "$verbose" -ge 2 ]]; then
+      cmd="$cmd --verbose"
+    fi
+
+    $cmd
   else
     cat
   fi
@@ -19,7 +25,7 @@ fixup_embeds_if_required() {
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
     "-v"|"--verbose")
-      verbose=1;;
+      verbose=$((verbose + 1));;
     "--fixup-embeds")
       fixup_embeds=1;;
     "--force")
@@ -43,10 +49,14 @@ for path in $source_dir/*.html; do
   destination="${target_dir}/$(basename $path)"
 
   if [[ -f "$destination" && "$force" -ne 1 ]]; then
-    if [[ "$verbose" -eq 1 ]]; then
+    if [[ "$verbose" -ge 1 ]]; then
       >&2 echo "Skipping $destination - already exists"
     fi
     continue
+  fi
+
+  if [[ "$verbose" -ge 1 ]]; then
+    >&2 echo "Generating $destination"
   fi
 
   cat "$path" \
@@ -55,8 +65,4 @@ for path in $source_dir/*.html; do
     | scripts/remove-swallowing-tags \
     | fixup_embeds_if_required \
     > "$destination"
-
-  if [[ "$verbose" -eq 1 ]]; then
-    >&2 echo "Wrote $destination"
-  fi
 done
