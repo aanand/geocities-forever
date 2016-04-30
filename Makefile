@@ -6,13 +6,8 @@ DOWNLOAD_DIR := www.oocities.org
 REWRITTEN_DIR := rewritten
 CORPUS_FILE := corpus.html
 CORPUS_RAW_FILE := corpus-raw.html
-SAMPLE_FILE := sample.html
-SAMPLE_RAW_FILE := sample-raw.html
 
 default: corpus
-
-sample:
-	cat $(SAMPLE_RAW_FILE) | python ids_to_urls.py | python remove_swallowing_tags.py > $(SAMPLE_FILE)
 
 corpus:
 	python urls_to_ids.py < $(CORPUS_RAW_FILE) > $(CORPUS_FILE)
